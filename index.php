@@ -23,44 +23,79 @@
 </table>
 <br>
 <div class="success" id="success" align="center"></div>
-<div class="container">
-<div class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">Insert Details</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="form34" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="form34" name="name">Fullname</label>
+<div id="employeeModal" class="modal fade">
+            <div class="modal-dialog">
+                <form method="post" id="employeeForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><i class="fa fa-plus"></i> Add/Edit User</h4>
+                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group"><label for="name" class="control-label">Name</label>
+                                <input type="text" class="form-control" id="empName" name="empName" placeholder=""
+                                    required>
+                            </div>
+                            
+                            <div class="form-group"><label for="name" class="control-label">Email</label>
+                                <input type="text" class="form-control" id="empEmail" name="empEmail" placeholder=""
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactno" class="control-label">Contact No</label>
+                                <input type="number" class="form-control" id="empcontact" name="empcontact"
+                                    placeholder="">
+                            </div>
+ 
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="empId" id="empId" value="0" />
+                            <input type="hidden" name="action" id="action" value="" />
+                            <input type="submit" name="save" id="save" class="btn btn-info" value="Save" />
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="md-form mb-5">
-          <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="form29" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="form29" name="email">Email</label>
-        </div>
 
-        <div class="md-form">
-          <i class="fas fa-pencil prefix grey-text"></i>
-          <input type="tel" id="form29" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="form8" name="contact">Contactno</label>
+        <div id="employeModal" class="modal fade">
+            <div class="modal-dialog">
+                <form method="post" id="employeForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><i class="fa fa-plus"></i> Add/Edit User</h4>
+                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group"><label for="name" class="control-label">Name</label>
+                                <input type="text" class="form-control" id="emppName" name="emppName" placeholder=""
+                                    required>
+                            </div>
+                            
+                            <div class="form-group"><label for="name" class="control-label">Email</label>
+                                <input type="text" class="form-control" id="emppEmail" name="emppEmail" placeholder=""
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactno" class="control-label">Contact No</label>
+                                <input type="number" class="form-control" id="emppcontact" name="emppcontact"
+                                    placeholder="">
+                            </div>
+ 
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="emppId" id="emppId" value="0" />
+                            <input type="hidden" name="action" id="action" value="" />
+                            <input type="button" name="btn_save" id="btn_save" class="btn btn-info" value="Save" />
+                            
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-unique" name="send" id="send">Send <i class="fas fa-paper-plane-o ml-1"></i></button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
 </body>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -100,24 +135,81 @@
 
     //Insert data form popup
     $('#my-example').on('click','.insertUser',function(){
-      $('#modalContactForm').modal('show');      
+      $('#employeeModal').modal('show');      
     });
 
     //Insert data
-    $('#my-example').on('click','.insertUser',function(){
-      $('#modalContactForm').modal('show');
-        var id = $(this).data('id');
-            // AJAX request
+    $("#employeeModal").on('submit','#employeeForm', function(){
             $.ajax({
               url: 'insert.php',
               type: 'post',
-              data: {id: id}, 
-              success: function() {
-                alert("data inserted");
-                        },
-            });
-        
+              data: $(this).serialize(), 
+              success: function(){
+                $('#employeeModal').modal('hide');
+                  userDataTable.ajax.reload();
+              }    
     });
-
   });
+
+  // Fetch record
+  $('#my-example').on('click','.updateuser',function(){
+                var id = $(this).data('id');
+                $('#emppId').val(id);
+                // AJAX request
+                $.ajax({
+                    url: 'update.php',
+                    type: 'post',
+                    data: {request:1,id: id,},
+                    dataType: 'json',
+                    success: function(response){
+                      if(response.status == 1){
+                        $('#employeModal').modal('show');    
+                            $('#emppName').val(response.data.fullname);
+                            $('#emppEmail').val(response.data.email);
+                            $('#emppcontact').val(response.data.contactno);
+                      }
+                      else{
+                        alert("Invalid ID.");
+                        } 
+                    }
+                });
+            });
+
+            //Update user
+            $("#employeModal").on('click','#btn_save', function(){
+              var id = $('#emppId').val();
+              var fullname = $('#emppName').val().trim();
+              var email = $('#emppEmail').val().trim();
+              var contactno= $('#emppcontact').val().trim();
+
+            $.ajax({
+              url: 'updatedata.php',
+              type: 'post',
+              data: {
+                    id: id,
+                    fullname: fullname,
+                    email: email,
+                    contactno: contactno,
+                    },
+              //dataType: 'json',                       
+              success: function(response){
+               // console.log(response.status);
+                            if(response.status == 1){
+                               // alert(response.message);
+                                // Empty the fields
+                                $('#emppName','#emppEmail','#emppcontact').val('');
+                                $('#emppId').val(0);
+                                // Close modal
+                               // alert('call');
+                                $('#employeModal').modal('hide');
+                                // Reload DataTable
+                               userDataTable.ajax.reload();
+    
+                            }else{
+                                alert(response.message);
+                            }
+                          }
+    });
+  }); 
+});
 </script>

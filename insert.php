@@ -5,12 +5,12 @@
         $db_name = 'jqueryex'; // Database Name
        
 $conn=mysqli_connect($db_host, $db_user, $db_pass, $db_name);
-$id  = $_POST["id"];
-$fname=$_POST["name"];
-$email=$_POST["email"];
-$contact=$_POST["contact"];
-$sql = "INSERT INTO users (fullname,email,contactno)
-VALUES ('".$fname."', '".$email."', '".$contact."') SET flag=1 WHERE id='".$id."'";
+
+$fname=$_POST["empName"];
+$email=$_POST["empEmail"];
+$contact=$_POST["empcontact"];
+$sql = "INSERT INTO users (fullname,email,contactno,flag)
+VALUES ('".$fname."', '".$email."', '".$contact."','1')";
 $result = $conn->query($sql);
 
 
