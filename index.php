@@ -5,6 +5,7 @@
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   </head>
@@ -25,7 +26,7 @@
 <div class="success" id="success" align="center"></div>
 <div id="employeeModal" class="modal fade">
             <div class="modal-dialog">
-                <form method="post" id="employeeForm">
+                <form method="post" id="employeeForm" name="employeeForm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title"><i class="fa fa-plus"></i> Add/Edit User</h4>
@@ -33,17 +34,15 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group"><label for="name" class="control-label">Name</label>
-                                <input type="text" class="form-control" id="empName" name="empName" placeholder=""
-                                    required>
+                                <input type="text" class="form-control" id="empName" name="empName" placeholder="">
                             </div>
                             
                             <div class="form-group"><label for="name" class="control-label">Email</label>
-                                <input type="text" class="form-control" id="empEmail" name="empEmail" placeholder=""
-                                    required>
+                                <input type="text" class="form-control" id="empEmail" name="empEmail" placeholder="">
                             </div>
                             <div class="form-group">
                                 <label for="contactno" class="control-label">Contact No</label>
-                                <input type="number" class="form-control" id="empcontact" name="empcontact"
+                                <input type="text" class="form-control" id="empcontact" name="empcontact"
                                     placeholder="">
                             </div>
  
@@ -80,7 +79,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="contactno" class="control-label">Contact No</label>
-                                <input type="number" class="form-control" id="emppcontact" name="emppcontact"
+                                <input type="text" class="form-control" id="emppcontact" name="emppcontact"
                                     placeholder="">
                             </div>
  
@@ -138,8 +137,46 @@
       $('#employeeModal').modal('show');      
     });
 
+   //Insert data form popup
+   $('#my-example').on('click','.insertUser',function(){
+      $('#employeeModal').modal('show');      
+    });
+
     //Insert data
-    $("#employeeModal").on('submit','#employeeForm', function(){
+    $("#employeeForm").validate({
+        rules: {
+          empName: {
+required: true
+},
+emppEmail: {
+required: true,
+email: true
+},
+emppcontact: {
+required: true,
+minlength: 10,
+maxlength: 10,
+number: true
+},
+},
+messages: {
+  empName: 'Please enter Name.',
+  emppEmail: {
+          required: 'Please enter Email Address.',
+          email: 'Please enter a valid Email Address.',
+        },
+        emppcontact: {
+          required: 'Please enter Contact.',
+          rangelength: 'Contact should be 10 digit number.'
+        },
+      },
+});
+$("#employeeModal").on('submit','#employeeForm', function(){
+    var form =  $("#employeeForm");
+    if (form.valid()) {
+    //alert("call");
+     //console.log($(this).serialize());
+   
             $.ajax({
               url: 'insert.php',
               type: 'post',
@@ -149,6 +186,7 @@
                   userDataTable.ajax.reload();
               }    
     });
+}
   });
 
   // Fetch record
@@ -193,7 +231,8 @@
                     },
               //dataType: 'json',                       
               success: function(response){
-               // console.log(response.status);
+                 // console.log(data);
+               console.log(response.status);
                             if(response.status == 1){
                                // alert(response.message);
                                 // Empty the fields

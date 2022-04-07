@@ -14,15 +14,29 @@ $id = 0;
  // Check id
  $record = mysqli_query($conn,"SELECT id FROM users WHERE id=".$id);
  if(mysqli_num_rows($record) > 0){
-
+   // echo 'hi';
      $fullname = mysqli_escape_string($conn,trim($_POST['fullname']));
      $email = mysqli_escape_string($conn,trim($_POST['email']));
      $contactno = mysqli_escape_string($conn,trim($_POST['contactno']));
+     $sql="select * from users where ( email='$email');";
+
+      $res=mysqli_query($conn,$sql);
+
+      if (mysqli_num_rows($res) > 0) {
+        
+        $row = mysqli_fetch_assoc($res);
+        if($email==isset($row['email']))
+        {
+                echo '<script>alert("email already exist")</script>';
+        }
+      }
+      else{
 
      if( $fullname != '' && $email != '' && $contactno != ''){
 
         $query= mysqli_query($conn,"UPDATE users SET fullname='".$fullname."',email='".$email."',contactno='".$contactno."' WHERE id=".$id);
-         echo $query;
+        // echo $query;
+         $result = $conn->query($query);
          echo json_encode( array("status" => 1,"message" => "Record updated.") );
          exit;
      }else{
@@ -30,4 +44,5 @@ $id = 0;
          exit;
      }
     }
+}
     ?>
